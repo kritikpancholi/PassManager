@@ -1,0 +1,69 @@
+{
+  "project_info": {
+    "project_number": "955674803025",
+    "firebase_url": "https://first-flutter-fa22d.firebaseio.com",
+    "project_id": "first-flutter-fa22d",
+    "storage_bucket": "first-flutter-fa22d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:955674803025:android:d231df6b588a8cb7",
+        "android_client_info": {
+          "package_name": "com.example.fire_base"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "955674803025-5el26e58aqgf8i16esjnptldv8me2af3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA3Wr8FlxnyQ9tM-_VT9DERJUpbMwEK8VM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "955674803025-5el26e58aqgf8i16esjnptldv8me2af3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:955674803025:android:9ac269a2944d386aaf7170",
+        "android_client_info": {
+          "package_name": "com.example.pass_manager"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "955674803025-5el26e58aqgf8i16esjnptldv8me2af3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA3Wr8FlxnyQ9tM-_VT9DERJUpbMwEK8VM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "955674803025-5el26e58aqgf8i16esjnptldv8me2af3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
