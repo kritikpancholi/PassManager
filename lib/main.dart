@@ -1,11 +1,9 @@
 import 'Login/Login.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'screens/PasswordsPage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'screens/DashBoard.dart';
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+void main() {
   runApp(MyApp());
 }
 
@@ -15,11 +13,32 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  SharedPreferences prefs;
+  int user_id = 0;
+  store() async {
+    prefs = await SharedPreferences.getInstance();
+    bool k = prefs.containsKey("user_if");
+    if (k) {
+      user_id = prefs.getInt("user_id");
+    } else {
+      user_id = 0;
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    store();
+  }
+
   @override
   Widget build(BuildContext context) {
+    // if (user_id != 0) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: "PassManager",
       home: Loginpage(),
     );
+    //}
   }
 }

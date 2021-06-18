@@ -29,9 +29,7 @@ class _PasswordPageState extends State<PasswordPage> {
                 return Card(
                   child: Column(
                     children: [
-                      ListTile(
-                        title: ,
-                      )
+                      ListTile(title: ProductBoxList(items: snapshot.data))
                     ],
                   ),
                 );
@@ -81,14 +79,7 @@ class ProductBoxList extends StatelessWidget {
       itemCount: items.length,
       itemBuilder: (context, index) {
         return GestureDetector(
-          child: ProductBox(item: items[index]),
-          onTap: () {
-            Navigator.push(
-              context, MaterialPageRoute(
-              builder: (context) => ProductPage(item: items[index]),
-            ),
-            );
-          },
+          child: Text(items[index].toString()),
         );
       },
     );

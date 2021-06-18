@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:crypto/crypto.dart';
 import 'dart:convert';
-import 'package:pass_manager/screens/PasswordsPage.dart';
+import 'package:pass_manager/model/model.dart';
+import 'package:http/http.dart' as http;
+import 'package:pass_manager/screens/DashBoard.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Loginpage extends StatefulWidget {
   @override
@@ -12,11 +13,6 @@ class Loginpage extends StatefulWidget {
 }
 
 class _LoginpageState extends State<Loginpage> {
-  FirebaseAuth auth = FirebaseAuth.instance;
-  var bytes = utf8.encode("foobar"); // data being hashe
-
-  //String _email, _password;
-  //TextController to read text entered in text field
   TextEditingController _password = TextEditingController();
   TextEditingController _email = TextEditingController();
   var keymail = false;
@@ -83,7 +79,6 @@ class _LoginpageState extends State<Loginpage> {
                       },
                     ),
                   ),
-                  // buttomn for submit
                   Padding(
                     padding: EdgeInsets.only(bottom: 15, left: 10, right: 10),
                     child: SizedBox(
@@ -98,7 +93,7 @@ class _LoginpageState extends State<Loginpage> {
                         color: Colors.redAccent,
                         onPressed: () async {
                           if (_formkey.currentState.validate()) {
-                            signUp();
+                            //signUp();
 
                             return null;
                           } else {
@@ -110,16 +105,31 @@ class _LoginpageState extends State<Loginpage> {
                     ),
                   ),
                   ElevatedButton(
-                      child: Text("Sign In"),
-                      onPressed: () {
+                      child: Text("Login In"),
+                      onPressed: () async {
                         if (_formkey.currentState.validate()) {
-                          signIn();
+                          User user =
+                              await fetchUser(_email.text, _password.text);
+                          if (user == null) {
+                            // TODO : do somthing
+                          } else {
+                            print(user.userId);
+                            SharedPreferences prefs =
+                                await SharedPreferences.getInstance();
 
-                          Navigator.push(
+                            prefs.setInt("user_id", user.userId);
+                            Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => PasswordsPage()));
-
+                                  builder: (context) => DashboardPage()),
+                            );
+                            // Navigator.pushAndRemoveUntil(
+                            //   context,
+                            //   MaterialPageRoute(
+                            //       builder: (context) => DashboardPage()),
+                            //   (Route<dynamic> route) => false,
+                            // );
+                          }
                           return null;
                         } else {
                           print("UnSuccessfull");
@@ -134,68 +144,25 @@ class _LoginpageState extends State<Loginpage> {
     );
   }
 
-  void signUp() async {
-    try {
-      UserCredential userCredential =
-          await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: _email.text,
-        password: _password.text,
-      );
-      final User user = auth.currentUser;
-      final uid = user.uid;
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'weak-password') {
-        // weak password variable here
-      } else if (e.code == 'email-already-in-use') {
-        setState(() {
-          keymail = true;
-        });
-        // already a user here
-      }
-    } catch (e) {
-      print(e);
-    }
-  }
+  Future<User> Login(String email, String password) async {
+    User api_response = await fetchUser(email, password);
 
-  void signIn() async {
-    try {
-      UserCredential userCredential =
-          await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: _email.text,
-        password: _password.text,
-      );
-      User user = auth.currentUser;
-
-//      print(uid);
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        print('No user found for that email.');
-      } else if (e.code == 'wrong-password') {
-        print('Wrong password provided for that user.');
-      }
-    }
-  }
-
-  void _navigateToNextScreen(BuildContext context) {
-    Navigator.of(context)
-        .push(MaterialPageRoute(builder: (context) => PasswordsPage()));
+    return api_response;
   }
 }
 
-class PasswordsPage extends StatefulWidget {
-  @override
-  _PasswordsPageState createState() {
-    return _PasswordsPageState();
-  }
-}
+Future<User> fetchUser(String email, String password) async {
+  try {
+    var response = await http.get(Uri.parse(
+        'http://192.168.43.77:5000/login?email=$email&password=$password'));
 
-class _PasswordsPageState extends State<PasswordsPage> {
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Container(
-        child: Text("Kritk"),
-      ),
-    );
+    if (response.statusCode == 200) {
+      return User.fromJson(jsonDecode(response.body));
+    } else if (response.statusCode == 400) {
+      return null;
+    } else
+      throw Exception('Failed to load album');
+  } catch (err) {
+    return null;
   }
 }
