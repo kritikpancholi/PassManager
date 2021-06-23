@@ -29,7 +29,7 @@ class Password {
     return Password(
       userid: json['user_id'] as int,
       email: json['email'] as String,
-      password: json['password'] as String,
+      password: json['user_password'] as String,
       title: json['title'] as String,
     );
   }

@@ -49,18 +49,23 @@ class _DashboardPageState extends State<DashboardPage> {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // TODO : have to add functionality
-        },
-        // hoverColor: Colors.white30,
-        splashColor: Colors.white30,
-        child: Icon(
-          Icons.add,
-          color: Colors.black,
-        ),
-        backgroundColor: Colors.white,
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () {
+      //     print("k");
+      //     if (_currentIndex == 0) {
+      //       setState(() {
+      //         _currentIndex = 0;
+      //       });
+      //     }
+      //   },
+      //   // hoverColor: Colors.white30,
+      //   splashColor: Colors.white30,
+      //   child: Icon(
+      //     Icons.add,
+      //     color: Colors.black,
+      //   ),
+      //   backgroundColor: Colors.white,
+      // ),
     );
   }
 }
