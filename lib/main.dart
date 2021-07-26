@@ -17,7 +17,7 @@ class _MyAppState extends State<MyApp> {
   int user_id = 0;
   store() async {
     prefs = await SharedPreferences.getInstance();
-    bool k = prefs.containsKey("user_if");
+    bool k = prefs.containsKey("user_id");
     if (k) {
       user_id = prefs.getInt("user_id");
     } else {

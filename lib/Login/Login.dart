@@ -84,57 +84,50 @@ class _LoginpageState extends State<Loginpage> {
                     child: SizedBox(
                       width: 200,
                       height: 50,
-                      child: RaisedButton(
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(50.0),
-                            side: BorderSide(color: Colors.blue, width: 2)),
-                        textColor: Colors.white,
-                        child: Text("SignUp"),
-                        color: Colors.redAccent,
-                        onPressed: () async {
-                          if (_formkey.currentState.validate()) {
-                            //signUp();
-
-                            return null;
-                          } else {
-                            // TODO : make a toast
-                            print("UnSuccessfull");
-                          }
-                        },
+                      child: ElevatedButton(
+                        child: Text('SignUp'),
+                        onPressed: () {},
                       ),
                     ),
                   ),
-                  ElevatedButton(
-                      child: Text("Login In"),
-                      onPressed: () async {
-                        if (_formkey.currentState.validate()) {
-                          User user =
-                              await fetchUser(_email.text, _password.text);
-                          if (user == null) {
-                            // TODO : do somthing
-                          } else {
-                            print(user.userId);
-                            SharedPreferences prefs =
-                                await SharedPreferences.getInstance();
+                  Padding(
+                    padding: EdgeInsets.only(bottom: 15, left: 10, right: 10),
+                    child: SizedBox(
+                      width: 200,
+                      height: 50,
+                      child: ElevatedButton(
+                          child: Text("Login In"),
+                          onPressed: () async {
+                            if (_formkey.currentState.validate()) {
+                              User user =
+                                  await fetchUser(_email.text, _password.text);
+                              if (user == null) {
+                                // TODO : do somthing
+                              } else {
+                                print(user.userId);
+                                SharedPreferences prefs =
+                                    await SharedPreferences.getInstance();
 
-                            prefs.setInt("user_id", user.userId);
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => DashboardPage()),
-                            );
-                            // Navigator.pushAndRemoveUntil(
-                            //   context,
-                            //   MaterialPageRoute(
-                            //       builder: (context) => DashboardPage()),
-                            //   (Route<dynamic> route) => false,
-                            // );
-                          }
-                          return null;
-                        } else {
-                          print("UnSuccessfull");
-                        }
-                      }),
+                                prefs.setInt("user_id", user.userId);
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => DashboardPage()),
+                                );
+                                // Navigator.pushAndRemoveUntil(
+                                //   context,
+                                //   MaterialPageRoute(
+                                //       builder: (context) => DashboardPage()),
+                                //   (Route<dynamic> route) => false,
+                                // );
+                              }
+                              return null;
+                            } else {
+                              print("UnSuccessfull");
+                            }
+                          }),
+                    ),
+                  )
                 ],
               ),
             ),
