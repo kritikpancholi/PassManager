@@ -4,8 +4,15 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart ' as http;
 import 'dart:convert';
 import 'AlertBoxPassword.dart';
+import 'package:flutter/services.dart';
+import 'package:pass_manager/model/GetPassword.dart';
 
 int user_id;
+
+getUserId() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  user_id = prefs.getInt('user_id');
+}
 
 class PasswordPage extends StatefulWidget {
   @override
@@ -16,6 +23,11 @@ class PasswordPage extends StatefulWidget {
 
 class _PasswordPageState extends State<PasswordPage> {
   Future<List<Password>> PasswordList = GetPassword();
+  @override
+  initState() {
+    super.initState();
+    getUserId();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,6 +39,10 @@ class _PasswordPageState extends State<PasswordPage> {
               return ProductBoxList(items: snapshot.data);
             } else if (snapshot.hasError) {
               return Text("${snapshot.error}");
+            } else if (snapshot.data == null) {
+              return Center(
+                child: Text('No Data'),
+              );
             }
             return CircularProgressIndicator();
           }),
@@ -50,31 +66,6 @@ class _PasswordPageState extends State<PasswordPage> {
   }
 }
 
-List<Password> parsePhotos(String responseBody) {
-  final parsed = jsonDecode(responseBody).cast<Map<String, dynamic>>();
-
-  return parsed.map<Password>((json) => Password.fromJson(json)).toList();
-}
-
-Future<List<Password>> GetPassword() async {
-  try {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    user_id = prefs.getInt('user_id');
-
-    var response = await http.get(
-        Uri.parse('http://192.168.43.77:5000/get_password?user_id=${user_id}'));
-    print(response.body);
-    if (response.statusCode == 200) {
-      return parsePhotos(response.body);
-    } else if (response.statusCode == 400) {
-      return null;
-    } else
-      throw Exception('Failed to load album');
-  } catch (e) {
-    print(e);
-  }
-}
-
 class ProductBoxList extends StatefulWidget {
   List<Password> items;
   ProductBoxList({Key key, this.items}) : super(key: key);
@@ -90,6 +81,11 @@ class _ProductBoxListState extends State<ProductBoxList> {
     return ListView.builder(
       itemCount: widget.items.length,
       itemBuilder: (context, index) {
+        if (widget.items.length == 0) {
+          return Center(
+            child: Text("No data"),
+          );
+        }
         return Container(
           height: 200,
           margin: EdgeInsets.only(top: 2, left: 2, right: 2),
@@ -102,15 +98,45 @@ class _ProductBoxListState extends State<ProductBoxList> {
                   title: Text('Title : ' + widget.items[index].title),
                   trailing: IconButton(
                     icon: Icon(Icons.delete),
-                    onPressed: () {},
+                    onPressed: () async {
+                      var response = await http.delete(
+                        Uri.parse(
+                            'http://192.168.43.77:5000/delete_password/${widget.items[index].id}'),
+                        headers: <String, String>{
+                          'Content-Type': 'application/json; charset=UTF-8',
+                        },
+                      );
+                      if (response.statusCode == 200) {
+                        setState(() {
+                          widget.items.removeAt(index);
+                        });
+                      }
+                    },
                   ),
                 ),
                 ListTile(
                   title: Text('Email : ' + widget.items[index].email),
                 ),
                 ListTile(
-                  title: Text('Password : ' + widget.items[index].password),
-                )
+                    title: Text('Password : ' + widget.items[index].password),
+                    trailing: ElevatedButton(
+                        onPressed: () {
+                          //   print(widget.items[index].password);
+                          Clipboard.setData(ClipboardData(
+                                  text: widget.items[index].password))
+                              .then((value) => Scaffold.of(context)
+                                  .showSnackBar(SnackBar(
+                                      content: Text("Password Copied"))));
+                          //print(Clipboard.getData(text));
+                        },
+                        child: Text(
+                          'Copy',
+                          style: TextStyle(color: Colors.black),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          elevation: 1,
+                          primary: Colors.white,
+                        )))
               ],
             ),
           ),
@@ -118,15 +144,4 @@ class _ProductBoxListState extends State<ProductBoxList> {
       },
     );
   }
-}
-
-Future<http.Response> deleteAlbum(String id) async {
-  final http.Response response = await http.delete(
-    Uri.parse('https://jsonplaceholder.typicode.com/albums/$id'),
-    headers: <String, String>{
-      'Content-Type': 'application/json; charset=UTF-8',
-    },
-  );
-
-  return response;
 }

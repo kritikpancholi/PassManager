@@ -17,12 +17,14 @@ class Password {
   final String email;
   final String password;
   final String title;
+  final int id;
 
   Password({
     this.userid,
     this.email,
     this.password,
     this.title,
+    this.id,
   });
 
   factory Password.fromJson(Map<String, dynamic> json) {
@@ -31,6 +33,7 @@ class Password {
       email: json['email'] as String,
       password: json['user_password'] as String,
       title: json['title'] as String,
+      id: json['id'] as int,
     );
   }
 }
