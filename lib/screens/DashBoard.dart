@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pass_manager/screens/PasswordPage.dart';
+import 'package:pass_manager/screens/NotesPage.dart';
 
 class DashboardPage extends StatefulWidget {
   @override
@@ -13,7 +14,7 @@ class _DashboardPageState extends State<DashboardPage> {
   final List<Widget> _children = [
     // PlaceholderWidget(Colors.white),
     PasswordPage(),
-    PlaceholderWidget(Colors.deepOrange),
+    NotesPage(),
   ];
   void onTabTapped(int index) {
     setState(() {
@@ -49,23 +50,6 @@ class _DashboardPageState extends State<DashboardPage> {
           ),
         ],
       ),
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: () {
-      //     print("k");
-      //     if (_currentIndex == 0) {
-      //       setState(() {
-      //         _currentIndex = 0;
-      //       });
-      //     }
-      //   },
-      //   // hoverColor: Colors.white30,
-      //   splashColor: Colors.white30,
-      //   child: Icon(
-      //     Icons.add,
-      //     color: Colors.black,
-      //   ),
-      //   backgroundColor: Colors.white,
-      // ),
     );
   }
 }

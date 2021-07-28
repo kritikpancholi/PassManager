@@ -4,13 +4,14 @@ import 'dart:convert';
 
 import 'package:pass_manager/screens/PasswordPage.dart';
 
-bool key = false;
-Future<void> ShowDialogPassword(BuildContext context, int userid) async {
+bool key_note = false;
+
+Future<void> ShowDialogNote(BuildContext context, int userid) async {
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
-  TextEditingController _password = TextEditingController();
-  TextEditingController _email = TextEditingController();
+  TextEditingController _description = TextEditingController();
+
   TextEditingController _title = TextEditingController();
-  bool showtext = true;
+
   return showDialog(
       context: context,
       builder: (_) => StatefulBuilder(builder: (context, setState) {
@@ -18,7 +19,7 @@ Future<void> ShowDialogPassword(BuildContext context, int userid) async {
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(10.0))),
               scrollable: true,
-              title: Text('Add Password'),
+              title: Text('Add Note'),
               content: Form(
                 key: _formkey,
                 child: Column(
@@ -35,30 +36,10 @@ Future<void> ShowDialogPassword(BuildContext context, int userid) async {
                     Padding(
                       padding: EdgeInsets.only(top: 5),
                       child: TextFormField(
-                        controller: _email,
+                        // obscureText: showtext,
+                        controller: _description,
                         decoration: InputDecoration(
-                          hintText: "Email / Username",
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(top: 5),
-                      child: TextFormField(
-                        obscureText: showtext,
-                        controller: _password,
-                        decoration: InputDecoration(
-                          suffixIcon: IconButton(
-                            icon: Icon(Icons.remove_red_eye),
-                            onPressed: () {
-                              setState(() {
-                                if (showtext == true)
-                                  showtext = false;
-                                else
-                                  showtext = true;
-                              });
-                            },
-                          ),
-                          hintText: "Enter Password",
+                          hintText: "Enter Description",
                         ),
                       ),
                     ),
@@ -69,10 +50,9 @@ Future<void> ShowDialogPassword(BuildContext context, int userid) async {
                         child: ElevatedButton(
                             child: Text("Add"),
                             onPressed: () {
-                              CreatPassword(_title.text, _email.text,
-                                      _password.text, user_id)
+                              CreatNote(_title.text, _description.text, user_id)
                                   .then((value) {
-                                key = true;
+                                key_note = true;
                                 Navigator.pop(context);
                               });
                             }),
@@ -87,7 +67,7 @@ Future<void> ShowDialogPassword(BuildContext context, int userid) async {
                                 ElevatedButton.styleFrom(primary: Colors.red),
                             child: Text("Cancel"),
                             onPressed: () {
-                              key = false;
+                              key_note = false;
 
                               Navigator.pop(context);
                             }),
@@ -100,19 +80,17 @@ Future<void> ShowDialogPassword(BuildContext context, int userid) async {
           }));
 }
 
-Future<void> CreatPassword(
-    String title, String email, String password, int user_id) async {
+Future<void> CreatNote(String title, String description, int user_id) async {
   try {
     final response = await http.post(
-      Uri.parse('http://192.168.43.77:5000/create_password'),
+      Uri.parse('http://192.168.43.77:5000/create_note'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode(<String, String>{
         'title': title,
         'user_id': user_id.toString(),
-        'email': email,
-        'user_password': password,
+        'description': description,
       }),
     );
 

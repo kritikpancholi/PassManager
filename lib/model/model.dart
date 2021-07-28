@@ -37,3 +37,25 @@ class Password {
     );
   }
 }
+
+class Note {
+  final int userid;
+  final String title;
+  final int id;
+  final String description;
+  Note({
+    this.userid,
+    this.title,
+    this.id,
+    this.description,
+  });
+
+  factory Note.fromJson(Map<String, dynamic> json) {
+    return Note(
+      userid: json['user_id'] as int,
+      title: json['title'] as String,
+      id: json['id'] as int,
+      description: json['description'] as String,
+    );
+  }
+}

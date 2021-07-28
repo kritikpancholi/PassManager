@@ -86,8 +86,23 @@ class _LoginpageState extends State<Loginpage> {
                       height: 50,
                       child: ElevatedButton(
                         child: Text('SignUp'),
-                        onPressed: () {
+                        onPressed: () async {
+                          if (_formkey.currentState.validate()) {
+                            User user =
+                                await newUser(_email.text, _password.text);
+                            if (user == null) {
+                            } else {
+                              SharedPreferences prefs =
+                                  await SharedPreferences.getInstance();
 
+                              prefs.setInt("user_id", user.userId);
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => DashboardPage()),
+                              );
+                            }
+                          }
                         },
                       ),
                     ),
@@ -159,5 +174,28 @@ Future<User> fetchUser(String email, String password) async {
       throw Exception('Failed to load album');
   } catch (err) {
     return null;
+  }
+}
+
+Future<User> newUser(String email, String password) async {
+  try {
+    final response = await http.post(
+      Uri.parse('http://192.168.43.77:5000/signIn'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        'email': email,
+        'password': password,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      return User.fromJson(jsonDecode(response.body));
+    } else {
+      throw Exception('Failed to create password.');
+    }
+  } catch (e) {
+    print(e);
   }
 }
